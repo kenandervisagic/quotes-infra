@@ -71,3 +71,4 @@ networks:
 
 volumes:
   minio_data:
+  mongo_data:
