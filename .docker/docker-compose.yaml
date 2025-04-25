@@ -1,18 +1,16 @@
 services:
   nginx-gateway:
-    image: nginx:alpine
+    build:
+      context: .
     container_name: nginx-gateway
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - /home/ubuntu/website/nginx/nginx.conf:/etc/nginx/nginx.conf
       - /home/ubuntu/website/logs:/var/log/nginx
       - /home/ubuntu/website/nginx/certificates:/etc/letsencrypt
       - /home/ubuntu/website/nginx/certificates-data:/data/certbot
       - /home/ubuntu/website/nginx/.htpasswd:/etc/nginx/.htpasswd
-    depends_on:
-      - frontend
     networks:
       - webnet
     restart: always

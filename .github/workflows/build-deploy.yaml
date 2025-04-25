@@ -1,0 +1,68 @@
+name: Docker CI/CD
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      short_sha: ${{ steps.set_output.outputs.short_sha }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set short SHA
+        id: set_output
+        run: echo "short_sha=${GITHUB_SHA::10}" >> $GITHUB_OUTPUT
+
+      - name: Docker TLS Setup + Build Images
+        run: |
+          cp .docker/* .
+        
+          chmod +x ./docker-tls-setup.sh
+          source docker-tls-setup.sh
+          
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/nginx:${{ steps.set_output.outputs.short_sha }} .
+
+        env:
+          DOCKER_HOST: ${{ secrets.DOCKER_HOST }}
+          CERT_PEM: ${{ secrets.CERT_PEM }}
+          KEY_PEM: ${{ secrets.KEY_PEM }}
+          CA_PEM: ${{ secrets.CA_PEM }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.3.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+
+      - name: Docker TLS Setup + Docker Compose
+        run: |
+          cp .docker/* .
+          
+          chmod +x ./docker-tls-setup.sh
+          source docker-tls-setup.sh
+          docker-compose up -d
+        env:
+          DOCKER_HOST: ${{ secrets.DOCKER_HOST }}
+          CERT_PEM: ${{ secrets.CERT_PEM }}
+          KEY_PEM: ${{ secrets.KEY_PEM }}
+          CA_PEM: ${{ secrets.CA_PEM }}
+          TAG: ${{ needs.build.outputs.short_sha }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          PG_USER: ${{secrets.PG_USER}}
+          PG_PASSWORD: ${{secrets.PG_PASSWORD}}
+          MINIO_ROOT_PASSWORD: ${{secrets.MINIO_ROOT_PASSWORD}}
+          MINIO_ROOT_USER: ${{secrets.MINIO_ROOT_USER}}
