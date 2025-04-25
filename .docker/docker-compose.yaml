@@ -1,7 +1,6 @@
 services:
   nginx-gateway:
-    build:
-      context: .
+    image: "$DOCKER_USERNAME/nginx:$TAG"
     container_name: nginx-gateway
     ports:
       - "80:80"
