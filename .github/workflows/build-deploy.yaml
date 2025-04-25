@@ -54,7 +54,7 @@ jobs:
           
           chmod +x ./docker-tls-setup.sh
           source docker-tls-setup.sh
-          docker-compose up -d
+          docker-compose down
         env:
           DOCKER_HOST: ${{ secrets.DOCKER_HOST }}
           CERT_PEM: ${{ secrets.CERT_PEM }}
