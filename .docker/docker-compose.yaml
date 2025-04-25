@@ -51,7 +51,9 @@ services:
     restart: always
 
 networks:
-  webnet:
+  quotes_webnet:
+    external: true
+
   vpn_custom_network:
     external: true
 
