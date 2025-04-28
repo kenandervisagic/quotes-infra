@@ -60,7 +60,9 @@ services:
     volumes:
       - mongo_data:/data/db
     networks:
-      - webnet
+      webnet:
+      vpn_custom_network:
+          ipv4_address: 10.13.14.4
     restart: always
 
 networks:
