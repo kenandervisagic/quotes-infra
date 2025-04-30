@@ -62,14 +62,66 @@ services:
     networks:
       webnet:
       vpn_custom_network:
-          ipv4_address: 10.13.14.4
+        ipv4_address: 10.13.14.4
     restart: always
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    expose:
+      - 9090
+    networks:
+      - monitoring
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - --storage.tsdb.retention.time=24h
+      - --storage.tsdb.retention.size=500MB
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 500M
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    expose:
+      - 3000
+    networks:
+      - monitoring
+      - vpn_custom_network
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node-exporter
+    expose:
+      - "9100"
+    networks:
+      - monitoring
+    restart: unless-stopped
+    command:
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($|/)"
+    volumes:
+      - /:/host:ro
 
 networks:
   webnet:
+  monitoring:
   vpn_custom_network:
     external: true
 
 volumes:
   minio_data:
   mongo_data:
+  grafana-storage:
