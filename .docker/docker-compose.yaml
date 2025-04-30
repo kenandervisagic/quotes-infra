@@ -75,6 +75,7 @@ services:
     volumes:
       - /home/ubuntu/website/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
+      - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.retention.time=24h
       - --storage.tsdb.retention.size=500MB
     restart: unless-stopped
