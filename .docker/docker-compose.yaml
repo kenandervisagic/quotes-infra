@@ -73,7 +73,7 @@ services:
     networks:
       - monitoring
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - /home/ubuntu/website/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - --storage.tsdb.retention.time=24h
       - --storage.tsdb.retention.size=500MB
