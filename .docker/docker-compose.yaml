@@ -90,8 +90,9 @@ services:
     expose:
       - 3000
     networks:
-      - monitoring
-      - vpn_custom_network
+      monitoring:
+      vpn_custom_network:
+        ipv4_address: 10.13.14.5
     volumes:
       - grafana-storage:/var/lib/grafana
     environment:
