@@ -112,7 +112,7 @@ services:
     restart: unless-stopped
     command:
       - '--path.procfs=/host/proc'
-      - '--path.rootfs=/rootfs'
+      - '--path.rootfs=/host'
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     volumes:
