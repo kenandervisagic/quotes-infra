@@ -57,6 +57,7 @@ services:
       MONGO_INITDB_DATABASE: images
       MONGO_INITDB_ROOT_USERNAME: $MONGO_INITDB_ROOT_USERNAME
       MONGO_INITDB_ROOT_PASSWORD: $MONGO_INITDB_ROOT_PASSWORD
+    command: ["mongod", "--quiet"]
     volumes:
       - mongo_data:/data/db
     networks:
