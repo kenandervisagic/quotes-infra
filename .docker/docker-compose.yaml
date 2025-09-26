@@ -120,7 +120,7 @@ services:
       - /:/host:ro
 
   fail2ban-exporter:
-    image: registry.gitlab.com/hectorjsmith/fail2ban-prometheus-exporter:latest
+    image: registry.gitlab.com/hctrdev/fail2ban-prometheus-exporter:latest
     container_name: fail2ban-exporter
     expose:
       - "9191"
