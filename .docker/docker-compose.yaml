@@ -119,23 +119,6 @@ services:
     volumes:
       - /:/host:ro
 
-  fail2ban-exporter:
-    image: registry.gitlab.com/hctrdev/fail2ban-prometheus-exporter:latest
-    container_name: fail2ban-exporter
-    expose:
-      - "9191"
-    networks:
-      - monitoring
-    volumes:
-      - /var/run/fail2ban:/var/run/fail2ban:ro
-      - /var/lib/fail2ban:/var/lib/fail2ban:ro
-    environment:
-      - F2B_DB_PATH=/var/lib/fail2ban/fail2ban.sqlite3
-      - F2B_COLLECTOR_TEXT_METRICS_ONLY=false
-    restart: unless-stopped
-    depends_on:
-      - prometheus
-
 networks:
   webnet:
   monitoring:
